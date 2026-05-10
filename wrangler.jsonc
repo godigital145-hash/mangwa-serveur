@@ -1,0 +1,67 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "serveur",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-05-07",
+  "dev": { "port": 8788 },
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "vars": {
+    "PUBLIC_SITE_URL": "https://mangwa-corpus.pages.dev"
+  },
+  // ADMIN_SECRET : définir via `wrangler secret put ADMIN_SECRET`
+  "kv_namespaces": [
+    {
+      "binding": "CACHE",
+      "id": "222c0769cfea47c89354c4c4ff6013ae"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "MEDIA",
+      "bucket_name": "mangwa-corpus-media"
+    }
+  ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "mangwa-corpus-db",
+      "database_id": "f98e7e76-4d85-45e2-b5fb-422ac9f133c9"
+    }
+  ],
+  "env": {
+    "preview": {
+      "name": "mangwa-corpus-preview",
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "mangwa-corpus-db",
+          "database_id": "f98e7e76-4d85-45e2-b5fb-422ac9f133c9"
+        }
+      ],
+      "r2_buckets": [
+        {
+          "binding": "MEDIA",
+          "bucket_name": "mangwa-corpus-media-preview"
+        }
+      ],
+      "kv_namespaces": [
+        {
+          "binding": "CACHE",
+          "id": "222c0769cfea47c89354c4c4ff6013ae"
+        }
+      ],
+      "vars": {
+        "PUBLIC_SITE_URL": "https://preview.mangwa-corpus.pages.dev"
+      }
+    }
+  }
+  // "ai": {
+  //   "binding": "AI"
+  // },
+  // "observability": {
+  //   "enabled": true,
+  //   "head_sampling_rate": 1
+  // }
+}
