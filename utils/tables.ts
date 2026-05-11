@@ -36,6 +36,7 @@ export type Audio = {
   album: string | null
   album_id: string | null
   lyrics: string | null
+  waveform: string | null
   created_at: string
   updated_at: string
 }
@@ -189,6 +190,7 @@ const audioSchema = {
   album: 'TEXT',
   album_id: 'TEXT',
   lyrics: 'TEXT',
+  waveform: 'TEXT',
   created_at: 'DATETIME NOT NULL',
   updated_at: 'DATETIME NOT NULL',
 }

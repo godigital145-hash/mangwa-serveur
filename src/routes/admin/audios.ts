@@ -31,6 +31,7 @@ app.post('/', async (c) => {
     album:        (form.get('album') as string) || null,
     album_id:     albumId,
     lyrics:       lyricsKey,
+    waveform:     (form.get('waveform') as string) || null,
     created_at:   now,
     updated_at:   now,
   })
@@ -78,6 +79,8 @@ app.put('/:id', async (c) => {
   if (coverKey !== null)  data.cover      = coverKey
   if (audioKey !== null)  data.audio_file = audioKey
   if (lyricsKey !== null) data.lyrics     = lyricsKey
+  const waveformVal = form.get('waveform') as string | null
+  if (waveformVal) data.waveform = waveformVal
 
   await Audios.update(id, data)
 
