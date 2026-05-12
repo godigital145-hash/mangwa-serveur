@@ -13,7 +13,7 @@ app.get('/', async (c) => {
 
 app.get('/:id', async (c) => {
   const { Magazines } = createModels(c.env.DB)
-  const row = await Magazines.findById(Number(c.req.param('id')))
+  const row = await Magazines.findById(c.req.param('id'))
   if (!row) return c.json({ error: 'Introuvable' }, 404)
   return c.json(row)
 })

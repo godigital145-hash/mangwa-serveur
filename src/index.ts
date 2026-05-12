@@ -6,6 +6,7 @@ import audios from './routes/audios'
 import videos from './routes/videos'
 import hero from './routes/hero'
 import albums from './routes/albums'
+import payments from './routes/payments'
 import admin from './routes/admin/index'
 import { initDatabase } from '../utils/tables'
 
@@ -41,6 +42,7 @@ app.route('/api/audios', audios)
 app.route('/api/videos', videos)
 app.route('/api/hero', hero)
 app.route('/api/albums', albums)
+app.route('/api/payments', payments)
 app.route('/admin', admin)
 
 app.get('/', (c) => c.json({ status: 'ok' }))

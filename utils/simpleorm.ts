@@ -356,6 +356,15 @@ class SimpleORM {
     }
   }
 
+  // Ajoute une colonne seulement si elle n'existe pas déjà
+  async addColumnIfNotExists(table: string, column: string, type: string): Promise<void> {
+    const info = await this.query<{ name: string }>(`PRAGMA table_info(${table})`)
+    const exists = info.some((col) => col.name === column)
+    if (!exists) {
+      await this.run(`ALTER TABLE ${table} ADD COLUMN ${column} ${type}`)
+    }
+  }
+
   // Dump de la base de données
   async dump(): Promise<ArrayBuffer> {
     try {
