@@ -1,0 +1,1 @@
+ALTER TABLE audios ADD COLUMN waveform TEXT;
