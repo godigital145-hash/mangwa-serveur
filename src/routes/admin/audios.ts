@@ -30,10 +30,12 @@ app.post('/', async (c) => {
     free:         form.get('free') === 'true' ? 1 : 0,
     album:        (form.get('album') as string) || null,
     album_id:     albumId,
-    lyrics:       lyricsKey,
-    waveform:     (form.get('waveform') as string) || null,
-    created_at:   now,
-    updated_at:   now,
+    lyrics:        lyricsKey,
+    waveform:      (form.get('waveform') as string) || null,
+    preview_start: form.get('preview_start') ? Number(form.get('preview_start')) : null,
+    preview_end:   form.get('preview_end') ? Number(form.get('preview_end')) : null,
+    created_at:    now,
+    updated_at:    now,
   })
 
   if (albumId) {
@@ -81,6 +83,8 @@ app.put('/:id', async (c) => {
   if (lyricsKey !== null) data.lyrics     = lyricsKey
   const waveformVal = form.get('waveform') as string | null
   if (waveformVal) data.waveform = waveformVal
+  data.preview_start = form.get('preview_start') ? Number(form.get('preview_start')) : null
+  data.preview_end   = form.get('preview_end') ? Number(form.get('preview_end')) : null
 
   await Audios.update(id, data)
 

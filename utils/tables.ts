@@ -37,6 +37,8 @@ export type Audio = {
   album_id: string | null
   lyrics: string | null
   waveform: string | null
+  preview_start: number | null
+  preview_end: number | null
   created_at: string
   updated_at: string
 }
@@ -191,6 +193,8 @@ const audioSchema = {
   album_id: 'TEXT',
   lyrics: 'TEXT',
   waveform: 'TEXT',
+  preview_start: 'REAL',
+  preview_end: 'REAL',
   created_at: 'DATETIME NOT NULL',
   updated_at: 'DATETIME NOT NULL',
 }
@@ -351,4 +355,6 @@ export async function initDatabase(db: D1Database): Promise<void> {
 
   // Migrations: colonnes ajoutées après la création initiale des tables
   await models.orm.addColumnIfNotExists('audios', 'waveform', 'TEXT')
+  await models.orm.addColumnIfNotExists('audios', 'preview_start', 'REAL')
+  await models.orm.addColumnIfNotExists('audios', 'preview_end', 'REAL')
 }
