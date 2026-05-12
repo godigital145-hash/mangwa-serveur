@@ -15,21 +15,20 @@ app.get('/', async (c) => {
 
 app.get('/:id', async (c) => {
   const { Albums, orm } = createModels(c.env.DB)
-  const id  = Number(c.req.param('id'))
+  const id  = c.req.param('id')
   const row = await Albums.findById(id)
   if (!row) return c.json({ error: 'Introuvable' }, 404)
 
   const tracks = await orm.query<{
-    audio_id: number; track_order: number;
+    audio_id: string; track_order: number;
     title: string; artist: string | null; cover: string | null;
-    audio_file: string | null; duration: number | null; free: number;
+    audio_file: string | null; duration: number | null; free: number; waveform: string | null;
   }>(
-    `SELECT at.audio_id, at.track_order,
-            a.title, a.artist, a.cover, a.audio_file, a.duration, a.free
-     FROM album_tracks at
-     JOIN audios a ON a.id = at.audio_id
-     WHERE at.album_id = ?
-     ORDER BY at.track_order ASC`,
+    `SELECT id as audio_id, 0 as track_order,
+            title, artist, cover, audio_file, duration, free, waveform
+     FROM audios
+     WHERE album_id = ?
+     ORDER BY created_at ASC`,
     [id],
   )
 

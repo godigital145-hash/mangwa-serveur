@@ -25,12 +25,11 @@ app.get('/:id/tracks', async (c) => {
     audio_id: string; track_order: number;
     title: string; artist: string | null; cover: string | null; duration: number | null;
   }>(
-    `SELECT at.audio_id, at.track_order,
-            a.title, a.artist, a.cover, a.duration
-     FROM album_tracks at
-     JOIN audios a ON a.id = at.audio_id
-     WHERE at.album_id = ?
-     ORDER BY at.track_order ASC`,
+    `SELECT id as audio_id, 0 as track_order,
+            title, artist, cover, duration
+     FROM audios
+     WHERE album_id = ?
+     ORDER BY created_at ASC`,
     [id],
   )
   return c.json(tracks)
