@@ -348,4 +348,11 @@ export async function initDatabase(db: D1Database): Promise<void> {
   await models.Payments.createTable()
   await models.Albums.createTable()
   await models.AlbumTracks.createTable()
+
+  // Migrations: colonnes ajoutées après la création initiale des tables
+  try {
+    await models.orm.run('ALTER TABLE audios ADD COLUMN waveform TEXT')
+  } catch {
+    // Colonne déjà existante, on ignore
+  }
 }
