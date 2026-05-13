@@ -23,9 +23,11 @@ app.get('/:id', async (c) => {
     audio_id: string; track_order: number;
     title: string; artist: string | null; cover: string | null;
     audio_file: string | null; duration: number | null; free: number; waveform: string | null;
+    preview_start: number | null; preview_end: number | null; price: number | null;
   }>(
     `SELECT id as audio_id, 0 as track_order,
-            title, artist, cover, audio_file, duration, free, waveform
+            title, artist, cover, audio_file, duration, free, waveform,
+            preview_start, preview_end, price
      FROM audios
      WHERE album_id = ?
      ORDER BY created_at ASC`,
