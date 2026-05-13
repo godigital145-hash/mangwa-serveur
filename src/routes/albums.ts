@@ -5,6 +5,17 @@ type Bindings = { DB: D1Database }
 
 const app = new Hono<{ Bindings: Bindings }>()
 
+function validateWaveform<T extends { waveform?: string | null }>(row: T): T {
+  if (!row.waveform) return row
+  try {
+    const bars = JSON.parse(row.waveform)
+    if (!Array.isArray(bars) || bars.length < 2000) return { ...row, waveform: null }
+  } catch {
+    return { ...row, waveform: null }
+  }
+  return row
+}
+
 app.get('/', async (c) => {
   const { Albums } = createModels(c.env.DB)
   const results = await Albums.findAll({
@@ -34,7 +45,7 @@ app.get('/:id', async (c) => {
     [id],
   )
 
-  return c.json({ ...row, tracks })
+  return c.json({ ...row, tracks: tracks.map(validateWaveform) })
 })
 
 export default app
