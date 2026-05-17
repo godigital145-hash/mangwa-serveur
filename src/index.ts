@@ -5,6 +5,7 @@ import magazines from './routes/magazines'
 import audios from './routes/audios'
 import videos from './routes/videos'
 import hero from './routes/hero'
+import bigHero from './routes/big-hero'
 import albums from './routes/albums'
 import payments from './routes/payments'
 import admin from './routes/admin/index'
@@ -41,6 +42,7 @@ app.route('/api/magazines', magazines)
 app.route('/api/audios', audios)
 app.route('/api/videos', videos)
 app.route('/api/hero', hero)
+app.route('/api/big-hero', bigHero)
 app.route('/api/albums', albums)
 app.route('/api/payments', payments)
 app.route('/admin', admin)

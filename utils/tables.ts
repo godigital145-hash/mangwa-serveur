@@ -157,6 +157,19 @@ export type Payment = {
   created_at: string
 }
 
+export type BigHeroSlide = {
+  id: string
+  title: string
+  cta_label: string | null
+  cta_url: string | null
+  image_desktop: string | null
+  image_mobile: string | null
+  slide_order: number
+  active: number
+  created_at: string
+  updated_at: string
+}
+
 // ─── Schémas SQL ─────────────────────────────────────────────────────────────
 
 const magazineSchema = {
@@ -314,6 +327,19 @@ const paymentSchema = {
   created_at: 'DATETIME NOT NULL',
 }
 
+const bigHeroSchema = {
+  id:            'TEXT PRIMARY KEY',
+  title:         'TEXT NOT NULL',
+  cta_label:     'TEXT',
+  cta_url:       'TEXT',
+  image_desktop: 'TEXT',
+  image_mobile:  'TEXT',
+  slide_order:   'INTEGER NOT NULL',
+  active:        'INTEGER NOT NULL',
+  created_at:    'DATETIME NOT NULL',
+  updated_at:    'DATETIME NOT NULL',
+}
+
 // ─── Factory ─────────────────────────────────────────────────────────────────
 
 export function createModels(db: D1Database) {
@@ -334,6 +360,7 @@ export function createModels(db: D1Database) {
     Payments:       factory.createUUIDModel<Payment>('payments', paymentSchema as any),
     Albums:         factory.createUUIDModel<Album>('albums', albumSchema as any),
     AlbumTracks:    factory.createUUIDModel<AlbumTrack>('album_tracks', albumTrackSchema as any),
+    BigHeroSlides:  factory.createUUIDModel<BigHeroSlide>('big_hero_slides', bigHeroSchema as any),
   }
 }
 
@@ -354,6 +381,7 @@ export async function initDatabase(db: D1Database): Promise<void> {
   await models.Payments.createTable()
   await models.Albums.createTable()
   await models.AlbumTracks.createTable()
+  await models.BigHeroSlides.createTable()
 
   // Migrations: colonnes ajoutées après la création initiale des tables
   await models.orm.addColumnIfNotExists('audios', 'waveform', 'TEXT')

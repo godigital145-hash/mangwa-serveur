@@ -11,6 +11,7 @@ import newsletter from './newsletter'
 import paymentMethods from './payment-methods'
 import payments from './payments'
 import albums from './albums'
+import bigHero from './big-hero'
 
 type Bindings = { DB: D1Database; MEDIA: R2Bucket; ADMIN_SECRET: string }
 
@@ -29,5 +30,6 @@ admin.route('/newsletter', newsletter)
 admin.route('/payment-methods', paymentMethods)
 admin.route('/payments', payments)
 admin.route('/albums', albums)
+admin.route('/big-hero', bigHero)
 
 export default admin
