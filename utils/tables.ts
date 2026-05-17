@@ -15,6 +15,7 @@ export type Magazine = {
   price: number | null
   pdf_file: string | null
   pdf_preview: string | null
+  preview_start_page: number | null
   pages: number | null
   created_at: string
   updated_at: string
@@ -171,6 +172,7 @@ const magazineSchema = {
   price: 'REAL',
   pdf_file: 'TEXT',
   pdf_preview: 'TEXT',
+  preview_start_page: 'INTEGER',
   pages: 'INTEGER',
   created_at: 'DATETIME NOT NULL',
   updated_at: 'DATETIME NOT NULL',
@@ -357,4 +359,5 @@ export async function initDatabase(db: D1Database): Promise<void> {
   await models.orm.addColumnIfNotExists('audios', 'waveform', 'TEXT')
   await models.orm.addColumnIfNotExists('audios', 'preview_start', 'REAL')
   await models.orm.addColumnIfNotExists('audios', 'preview_end', 'REAL')
+  await models.orm.addColumnIfNotExists('magazines', 'preview_start_page', 'INTEGER')
 }
