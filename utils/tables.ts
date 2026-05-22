@@ -10,6 +10,7 @@ export type Magazine = {
   description: string | null
   issue_number: number | null
   category: string | null
+  type: string | null
   published_at: string | null
   featured: number
   price: number | null
@@ -180,6 +181,7 @@ const magazineSchema = {
   description: 'TEXT',
   issue_number: 'INTEGER',
   category: 'TEXT',
+  type: 'TEXT',
   published_at: 'TEXT',
   featured: 'INTEGER NOT NULL',
   price: 'REAL',
@@ -388,4 +390,5 @@ export async function initDatabase(db: D1Database): Promise<void> {
   await models.orm.addColumnIfNotExists('audios', 'preview_start', 'REAL')
   await models.orm.addColumnIfNotExists('audios', 'preview_end', 'REAL')
   await models.orm.addColumnIfNotExists('magazines', 'preview_start_page', 'INTEGER')
+  await models.orm.addColumnIfNotExists('magazines', 'type', 'TEXT')
 }
