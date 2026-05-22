@@ -84,6 +84,7 @@ export type MediaFile = {
   content_type: string
   size: number
   folder: string
+  media_type: string | null
   created_at: string
 }
 
@@ -255,6 +256,7 @@ const mediaSchema = {
   content_type: 'TEXT NOT NULL',
   size: 'INTEGER NOT NULL',
   folder: 'TEXT NOT NULL',
+  media_type: 'TEXT',
   created_at: 'DATETIME NOT NULL',
 }
 
@@ -391,4 +393,5 @@ export async function initDatabase(db: D1Database): Promise<void> {
   await models.orm.addColumnIfNotExists('audios', 'preview_end', 'REAL')
   await models.orm.addColumnIfNotExists('magazines', 'preview_start_page', 'INTEGER')
   await models.orm.addColumnIfNotExists('magazines', 'type', 'TEXT')
+  await models.orm.addColumnIfNotExists('media_files', 'media_type', 'TEXT')
 }

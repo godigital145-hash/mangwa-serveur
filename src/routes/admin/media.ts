@@ -13,6 +13,13 @@ type Bindings = { DB: D1Database; MEDIA: R2Bucket }
 
 const app = new Hono<{ Bindings: Bindings }>()
 
+function getMediaType(contentType: string): string | null {
+  if (contentType.startsWith('image/')) return 'image'
+  if (contentType.startsWith('audio/')) return 'audio'
+  if (contentType === 'application/pdf' || contentType.includes('epub')) return 'ebook'
+  return null
+}
+
 app.post('/', async (c) => {
   const { MediaFiles } = createModels(c.env.DB)
   const form   = await c.req.formData()
@@ -35,6 +42,7 @@ app.post('/', async (c) => {
     content_type: file.type,
     size:         file.size,
     folder,
+    media_type:   getMediaType(file.type),
     created_at:   new Date().toISOString(),
   })
 
