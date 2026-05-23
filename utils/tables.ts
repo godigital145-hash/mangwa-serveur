@@ -18,6 +18,24 @@ export type Magazine = {
   pdf_preview: string | null
   preview_start_page: number | null
   pages: number | null
+  editorial: string | null
+  created_at: string
+  updated_at: string
+}
+
+export type Ebook = {
+  id: string
+  title: string
+  description: string | null
+  editorial: string | null
+  cover: string | null
+  pdf_file: string | null
+  pdf_preview: string | null
+  preview_start_page: number | null
+  pages: number | null
+  price: number | null
+  published_at: string | null
+  featured: number
   created_at: string
   updated_at: string
 }
@@ -190,6 +208,24 @@ const magazineSchema = {
   pdf_preview: 'TEXT',
   preview_start_page: 'INTEGER',
   pages: 'INTEGER',
+  editorial: 'TEXT',
+  created_at: 'DATETIME NOT NULL',
+  updated_at: 'DATETIME NOT NULL',
+}
+
+const ebookSchema = {
+  id: 'TEXT PRIMARY KEY',
+  title: 'TEXT NOT NULL',
+  description: 'TEXT',
+  editorial: 'TEXT',
+  cover: 'TEXT',
+  pdf_file: 'TEXT',
+  pdf_preview: 'TEXT',
+  preview_start_page: 'INTEGER',
+  pages: 'INTEGER',
+  price: 'REAL',
+  published_at: 'TEXT',
+  featured: 'INTEGER NOT NULL',
   created_at: 'DATETIME NOT NULL',
   updated_at: 'DATETIME NOT NULL',
 }
@@ -353,6 +389,7 @@ export function createModels(db: D1Database) {
   return {
     orm,
     Magazines:      factory.createUUIDModel<Magazine>('magazines', magazineSchema as any),
+    Ebooks:         factory.createUUIDModel<Ebook>('ebooks', ebookSchema as any),
     Audios:         factory.createUUIDModel<Audio>('audios', audioSchema as any),
     Videos:         factory.createUUIDModel<Video>('videos', videoSchema as any),
     HeroSections:   factory.createUUIDModel<HeroSection>('hero_sections', heroSchema as any),
@@ -374,6 +411,7 @@ export async function initDatabase(db: D1Database): Promise<void> {
   const models = createModels(db)
 
   await models.Magazines.createTable()
+  await models.Ebooks.createTable()
   await models.Audios.createTable()
   await models.Videos.createTable()
   await models.HeroSections.createTable()
@@ -393,5 +431,6 @@ export async function initDatabase(db: D1Database): Promise<void> {
   await models.orm.addColumnIfNotExists('audios', 'preview_end', 'REAL')
   await models.orm.addColumnIfNotExists('magazines', 'preview_start_page', 'INTEGER')
   await models.orm.addColumnIfNotExists('magazines', 'type', 'TEXT')
+  await models.orm.addColumnIfNotExists('magazines', 'editorial', 'TEXT')
   await models.orm.addColumnIfNotExists('media_files', 'media_type', 'TEXT')
 }

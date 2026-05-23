@@ -1,6 +1,7 @@
 import { Hono } from 'hono'
 import { adminAuth } from '../../middleware/auth'
 import magazines from './magazines'
+import ebooks from './ebooks'
 import audios from './audios'
 import videos from './videos'
 import hero from './hero'
@@ -20,6 +21,7 @@ const admin = new Hono<{ Bindings: Bindings }>()
 admin.use('*', adminAuth)
 
 admin.route('/magazines', magazines)
+admin.route('/ebooks', ebooks)
 admin.route('/audios', audios)
 admin.route('/videos', videos)
 admin.route('/hero', hero)

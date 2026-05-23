@@ -2,6 +2,7 @@ import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import media from './routes/media'
 import magazines from './routes/magazines'
+import ebooks from './routes/ebooks'
 import audios from './routes/audios'
 import videos from './routes/videos'
 import hero from './routes/hero'
@@ -39,6 +40,7 @@ app.onError((err, c) => {
 
 app.route('/api/media', media)
 app.route('/api/magazines', magazines)
+app.route('/api/ebooks', ebooks)
 app.route('/api/audios', audios)
 app.route('/api/videos', videos)
 app.route('/api/hero', hero)
