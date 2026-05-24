@@ -174,6 +174,7 @@ export type Payment = {
   status: string
   payment_method_id: string | null
   reference: string | null
+  paypal_order_id: string | null
   created_at: string
 }
 
@@ -364,6 +365,7 @@ const paymentSchema = {
   status: 'TEXT NOT NULL',
   payment_method_id: 'TEXT',
   reference: 'TEXT',
+  paypal_order_id: 'TEXT',
   created_at: 'DATETIME NOT NULL',
 }
 
@@ -433,4 +435,16 @@ export async function initDatabase(db: D1Database): Promise<void> {
   await models.orm.addColumnIfNotExists('magazines', 'type', 'TEXT')
   await models.orm.addColumnIfNotExists('magazines', 'editorial', 'TEXT')
   await models.orm.addColumnIfNotExists('media_files', 'media_type', 'TEXT')
+  await models.orm.addColumnIfNotExists('payments', 'paypal_order_id', 'TEXT')
+
+  // Seed PayPal payment method if missing
+  const existingPaypal = await models.PaymentMethods.findAll({ where: { type: 'paypal' }, limit: 1 })
+  if (existingPaypal.length === 0) {
+    await models.PaymentMethods.create({
+      name: 'PayPal',
+      type: 'paypal',
+      active: 1,
+      created_at: new Date().toISOString(),
+    })
+  }
 }

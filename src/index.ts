@@ -9,6 +9,7 @@ import hero from './routes/hero'
 import bigHero from './routes/big-hero'
 import albums from './routes/albums'
 import payments from './routes/payments'
+import paypal from './routes/paypal'
 import admin from './routes/admin/index'
 import { initDatabase } from '../utils/tables'
 
@@ -17,6 +18,10 @@ type Bindings = {
   MEDIA: R2Bucket
   CACHE: KVNamespace
   ADMIN_SECRET: string
+  PAYPAL_CLIENT_ID: string
+  PAYPAL_SECRET: string
+  PAYPAL_ENV: string
+  PAYPAL_XAF_TO_EUR: string
 }
 
 const app = new Hono<{ Bindings: Bindings }>()
@@ -47,6 +52,7 @@ app.route('/api/hero', hero)
 app.route('/api/big-hero', bigHero)
 app.route('/api/albums', albums)
 app.route('/api/payments', payments)
+app.route('/api/paypal', paypal)
 app.route('/admin', admin)
 
 app.get('/', (c) => c.json({ status: 'ok' }))

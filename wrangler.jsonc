@@ -55,7 +55,9 @@
         }
       ],
       "vars": {
-        "PUBLIC_SITE_URL": "https://preview.mangwacorpus.com"
+        "PUBLIC_SITE_URL": "https://preview.mangwacorpus.com",
+        "PAYPAL_XAF_TO_EUR": "0.00152",
+        "PAYPAL_ENV": "sandbox"
       }
     }
   },
