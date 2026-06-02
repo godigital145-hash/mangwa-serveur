@@ -175,6 +175,11 @@ export type Payment = {
   payment_method_id: string | null
   reference: string | null
   paypal_order_id: string | null
+  monetbil_payment_ref: string | null
+  monetbil_transaction_id: string | null
+  customer_name: string | null
+  customer_email: string | null
+  customer_phone: string | null
   created_at: string
 }
 
@@ -366,6 +371,11 @@ const paymentSchema = {
   payment_method_id: 'TEXT',
   reference: 'TEXT',
   paypal_order_id: 'TEXT',
+  monetbil_payment_ref: 'TEXT',
+  monetbil_transaction_id: 'TEXT',
+  customer_name: 'TEXT',
+  customer_email: 'TEXT',
+  customer_phone: 'TEXT',
   created_at: 'DATETIME NOT NULL',
 }
 
@@ -436,6 +446,11 @@ export async function initDatabase(db: D1Database): Promise<void> {
   await models.orm.addColumnIfNotExists('magazines', 'editorial', 'TEXT')
   await models.orm.addColumnIfNotExists('media_files', 'media_type', 'TEXT')
   await models.orm.addColumnIfNotExists('payments', 'paypal_order_id', 'TEXT')
+  await models.orm.addColumnIfNotExists('payments', 'monetbil_payment_ref', 'TEXT')
+  await models.orm.addColumnIfNotExists('payments', 'monetbil_transaction_id', 'TEXT')
+  await models.orm.addColumnIfNotExists('payments', 'customer_name', 'TEXT')
+  await models.orm.addColumnIfNotExists('payments', 'customer_email', 'TEXT')
+  await models.orm.addColumnIfNotExists('payments', 'customer_phone', 'TEXT')
 
   // Seed PayPal payment method if missing
   const existingPaypal = await models.PaymentMethods.findAll({ where: { type: 'paypal' }, limit: 1 })
@@ -443,6 +458,17 @@ export async function initDatabase(db: D1Database): Promise<void> {
     await models.PaymentMethods.create({
       name: 'PayPal',
       type: 'paypal',
+      active: 1,
+      created_at: new Date().toISOString(),
+    })
+  }
+
+  // Seed Monetbil payment method if missing
+  const existingMonetbil = await models.PaymentMethods.findAll({ where: { type: 'monetbil' }, limit: 1 })
+  if (existingMonetbil.length === 0) {
+    await models.PaymentMethods.create({
+      name: 'Mobile Money (MTN / Orange)',
+      type: 'monetbil',
       active: 1,
       created_at: new Date().toISOString(),
     })

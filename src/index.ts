@@ -10,6 +10,7 @@ import bigHero from './routes/big-hero'
 import albums from './routes/albums'
 import payments from './routes/payments'
 import paypal from './routes/paypal'
+import monetbil from './routes/monetbil'
 import admin from './routes/admin/index'
 import { initDatabase } from '../utils/tables'
 
@@ -22,6 +23,9 @@ type Bindings = {
   PAYPAL_SECRET: string
   PAYPAL_ENV: string
   PAYPAL_XAF_TO_EUR: string
+  MONETBIL_SERVICE_KEY: string
+  MONETBIL_RETURN_URL: string
+  MONETBIL_NOTIFY_URL: string
 }
 
 const app = new Hono<{ Bindings: Bindings }>()
@@ -53,6 +57,7 @@ app.route('/api/big-hero', bigHero)
 app.route('/api/albums', albums)
 app.route('/api/payments', payments)
 app.route('/api/paypal', paypal)
+app.route('/api/monetbil', monetbil)
 app.route('/admin', admin)
 
 app.get('/', (c) => c.json({ status: 'ok' }))
