@@ -16,6 +16,17 @@ app.get('/config', (c) => {
   })
 })
 
+const COUNTRY_CURRENCY: Record<string, string> = {
+  CM: 'XAF',
+  CD: 'CDF',
+  SN: 'XOF',
+  CG: 'XAF',
+  BJ: 'XOF',
+  LR: 'LRD',
+  UG: 'UGX',
+  GA: 'XAF',
+}
+
 app.post('/create-payment', async (c) => {
   const body = await c.req.json<{
     entity_type: string
@@ -24,10 +35,17 @@ app.post('/create-payment', async (c) => {
     name: string
     email: string
     phone?: string
+    country?: string
   }>()
 
   if (!body.entity_type || !body.entity_id || !body.amount || !body.name || !body.email) {
     return c.json({ error: 'Champs obligatoires manquants' }, 400)
+  }
+
+  const country = (body.country ?? 'CM').toUpperCase()
+  const currency = COUNTRY_CURRENCY[country]
+  if (!currency) {
+    return c.json({ error: `Pays non supporté : ${country}` }, 400)
   }
 
   if (!c.env.MONETBIL_SERVICE_KEY) {
@@ -41,7 +59,7 @@ app.post('/create-payment', async (c) => {
     entity_type: body.entity_type,
     entity_id: body.entity_id,
     amount: body.amount,
-    currency: 'XAF',
+    currency,
     status: 'pending',
     payment_method_id: null,
     reference,
@@ -56,8 +74,8 @@ app.post('/create-payment', async (c) => {
 
   const monetbilBody: Record<string, unknown> = {
     amount: body.amount,
-    currency: 'XAF',
-    country: 'CM',
+    currency,
+    country,
     locale: 'fr',
     payment_ref: reference,
     item_ref: `${body.entity_type}-${body.entity_id}`,
