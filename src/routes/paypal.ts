@@ -7,6 +7,7 @@ type Bindings = {
   PAYPAL_SECRET: string
   PAYPAL_ENV: string
   PAYPAL_XAF_TO_EUR: string
+  PAYPAL_WEBHOOK_ID?: string
 }
 
 const app = new Hono<{ Bindings: Bindings }>()
@@ -137,6 +138,82 @@ app.post('/capture-order', async (c) => {
     reference: payment?.reference ?? body.order_id,
     payment_id: payment?.id ?? null,
   })
+})
+
+async function verifyWebhookSignature(c: any, rawBody: string, headers: Record<string, string>): Promise<boolean> {
+  const webhookId = c.env.PAYPAL_WEBHOOK_ID
+  if (!webhookId) return true
+  try {
+    const token = await paypalAccessToken(c.env)
+    const res = await fetch(`${paypalBase(c.env)}/v1/notifications/verify-webhook-signature`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        auth_algo: headers['paypal-auth-algo'],
+        cert_url: headers['paypal-cert-url'],
+        transmission_id: headers['paypal-transmission-id'],
+        transmission_sig: headers['paypal-transmission-sig'],
+        transmission_time: headers['paypal-transmission-time'],
+        webhook_id: webhookId,
+        webhook_event: JSON.parse(rawBody),
+      }),
+    })
+    const data = await res.json() as { verification_status?: string }
+    return data.verification_status === 'SUCCESS'
+  } catch {
+    return false
+  }
+}
+
+app.post('/webhook', async (c) => {
+  const rawBody = await c.req.text()
+  const headers: Record<string, string> = {}
+  c.req.raw.headers.forEach((v, k) => { headers[k.toLowerCase()] = v })
+
+  const ok = await verifyWebhookSignature(c, rawBody, headers)
+  if (!ok) {
+    return c.json({ error: 'Signature invalide' }, 401)
+  }
+
+  let event: any
+  try { event = JSON.parse(rawBody) } catch { return c.json({ error: 'JSON invalide' }, 400) }
+
+  const eventType = String(event?.event_type ?? '')
+  const resource = event?.resource ?? {}
+  const orderId =
+    resource?.supplementary_data?.related_ids?.order_id ??
+    (eventType.startsWith('CHECKOUT.ORDER.') ? resource?.id : null)
+
+  if (!orderId) {
+    return c.json({ ok: true, ignored: true, event_type: eventType })
+  }
+
+  const { Payments } = createModels(c.env.DB)
+  const matches = await Payments.findAll({ where: { paypal_order_id: orderId }, limit: 1 })
+  const payment = matches[0]
+  if (!payment) {
+    return c.json({ ok: true, ignored: true, reason: 'payment introuvable', order_id: orderId })
+  }
+
+  let newStatus: string | null = null
+  if (eventType === 'PAYMENT.CAPTURE.COMPLETED' || eventType === 'CHECKOUT.ORDER.APPROVED') {
+    newStatus = 'paid'
+  } else if (
+    eventType === 'PAYMENT.CAPTURE.DENIED' ||
+    eventType === 'PAYMENT.CAPTURE.DECLINED' ||
+    eventType === 'PAYMENT.CAPTURE.REVERSED' ||
+    eventType === 'CHECKOUT.ORDER.VOIDED'
+  ) {
+    newStatus = 'failed'
+  } else if (eventType === 'PAYMENT.CAPTURE.REFUNDED') {
+    newStatus = 'refunded'
+  }
+
+  if (newStatus) {
+    await Payments.update(payment.id, { status: newStatus })
+  }
+
+  return c.json({ ok: true, event_type: eventType, status: newStatus ?? payment.status })
 })
 
 export default app

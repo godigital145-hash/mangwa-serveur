@@ -23,6 +23,7 @@ type Bindings = {
   PAYPAL_SECRET: string
   PAYPAL_ENV: string
   PAYPAL_XAF_TO_EUR: string
+  PAYPAL_WEBHOOK_ID: string
   MONETBIL_SERVICE_KEY: string
   MONETBIL_RETURN_URL: string
   MONETBIL_NOTIFY_URL: string
