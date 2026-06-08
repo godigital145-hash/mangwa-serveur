@@ -4,6 +4,7 @@ import media from './routes/media'
 import magazines from './routes/magazines'
 import ebooks from './routes/ebooks'
 import audios from './routes/audios'
+import podcasts from './routes/podcasts'
 import videos from './routes/videos'
 import hero from './routes/hero'
 import bigHero from './routes/big-hero'
@@ -52,6 +53,7 @@ app.route('/api/media', media)
 app.route('/api/magazines', magazines)
 app.route('/api/ebooks', ebooks)
 app.route('/api/audios', audios)
+app.route('/api/podcasts', podcasts)
 app.route('/api/videos', videos)
 app.route('/api/hero', hero)
 app.route('/api/big-hero', bigHero)

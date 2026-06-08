@@ -59,6 +59,7 @@ export type Audio = {
   waveform: string | null
   preview_start: number | null
   preview_end: number | null
+  type: string | null
   created_at: string
   updated_at: string
 }
@@ -255,6 +256,7 @@ const audioSchema = {
   waveform: 'TEXT',
   preview_start: 'REAL',
   preview_end: 'REAL',
+  type: "TEXT DEFAULT 'musique'",
   created_at: 'DATETIME NOT NULL',
   updated_at: 'DATETIME NOT NULL',
 }
@@ -441,6 +443,7 @@ export async function initDatabase(db: D1Database): Promise<void> {
   await models.orm.addColumnIfNotExists('audios', 'waveform', 'TEXT')
   await models.orm.addColumnIfNotExists('audios', 'preview_start', 'REAL')
   await models.orm.addColumnIfNotExists('audios', 'preview_end', 'REAL')
+  await models.orm.addColumnIfNotExists('audios', 'type', "TEXT DEFAULT 'musique'")
   await models.orm.addColumnIfNotExists('magazines', 'preview_start_page', 'INTEGER')
   await models.orm.addColumnIfNotExists('magazines', 'type', 'TEXT')
   await models.orm.addColumnIfNotExists('magazines', 'editorial', 'TEXT')

@@ -17,8 +17,10 @@ function validateWaveform<T extends { waveform?: string | null }>(row: T): T {
 }
 
 app.get('/', async (c) => {
-  const { Audios } = createModels(c.env.DB)
-  const results = await Audios.findAll({ orderBy: { column: 'created_at', direction: 'DESC' } })
+  const { orm } = createModels(c.env.DB)
+  const results = await orm.query<any>(
+    `SELECT * FROM audios WHERE type IS NULL OR type = 'musique' ORDER BY created_at DESC`,
+  )
   return c.json(results.map(validateWaveform))
 })
 

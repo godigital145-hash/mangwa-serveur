@@ -34,6 +34,7 @@ app.post('/', async (c) => {
     waveform:      (form.get('waveform') as string) || null,
     preview_start: form.get('preview_start') ? Number(form.get('preview_start')) : null,
     preview_end:   form.get('preview_end') ? Number(form.get('preview_end')) : null,
+    type:          (form.get('type') as string) || 'musique',
     created_at:    now,
     updated_at:    now,
   })
@@ -85,6 +86,8 @@ app.put('/:id', async (c) => {
   if (waveformVal) data.waveform = waveformVal
   data.preview_start = form.get('preview_start') ? Number(form.get('preview_start')) : null
   data.preview_end   = form.get('preview_end') ? Number(form.get('preview_end')) : null
+  const typeVal = form.get('type') as string | null
+  if (typeVal) data.type = typeVal
 
   await Audios.update(id, data)
 
