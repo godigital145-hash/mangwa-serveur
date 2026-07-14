@@ -25,6 +25,7 @@ app.post('/', async (c) => {
     published_at: (form.get('published_at') as string) || null,
     featured:     form.get('featured') === 'true' ? 1 : 0,
     free:         form.get('free') === 'true' ? 1 : 0,
+    type:         (form.get('type') as string) || 'simple',
     created_at:   now,
     updated_at:   now,
   })
@@ -54,6 +55,8 @@ app.put('/:id', async (c) => {
   }
   if (thumbnailKey !== null) data.thumbnail  = thumbnailKey
   if (videoKey !== null)     data.video_file = videoKey
+  const typeVal = form.get('type') as string | null
+  if (typeVal) data.type = typeVal
 
   await Videos.update(id, data)
   await logActivity(c.env.DB, 'update', 'video', id, title, thumbnailKey)
